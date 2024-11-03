@@ -21,13 +21,12 @@ def check_input(input_text):
 def main():
     pygame.init()
     pygame.font.init()
-    size = width, height = 800, 800
+    size = width, height = 1920, 1080
     screen = pygame.display.set_mode(size, pygame.FULLSCREEN | pygame.NOFRAME | pygame.WINDOWFOCUSGAINED)
     size = width, height = update_size(screen)
     flag = False
 
 
-    # hwnd = win32gui.GetForegroundWindow()
     hwnd = pygame.display.get_wm_info()["window"]
     win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, win32con.SWP_NOSIZE)
 
@@ -41,16 +40,13 @@ def main():
     end = False
     while not end:
         if not pygame.display.get_active() and not flag:
-            print(1)
             print(os.system('python.exe .\main.py'))
-            # print(os.system('python.exe .\main.py'))
             flag = True
-            # print(hwnd)
-            # hwnd = pygame.display.get_wm_info()["window"]
-            # win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, win32con.SWP_NOSIZE)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                end = False
+                # pass
+                end = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
