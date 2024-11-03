@@ -26,7 +26,6 @@ def main():
     size = width, height = update_size(screen)
     flag = False
 
-
     hwnd = pygame.display.get_wm_info()["window"]
     win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, win32con.SWP_NOSIZE)
 
@@ -40,7 +39,7 @@ def main():
     end = False
     while not end:
         if not pygame.display.get_active() and not flag:
-            print(os.system('python.exe .\main.py'))
+            print(os.system('.\main.exe'))
             flag = True
 
         for event in pygame.event.get():
