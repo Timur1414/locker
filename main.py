@@ -16,7 +16,6 @@ def set_autostart_registry(app_name, key_data=None, autostart: bool = True):
     :param key_data:    A string that specifies the application path.
     :param autostart:   True - create/update autostart key / False - delete autostart key
     """
-
     with winreg.OpenKey(
             key=winreg.HKEY_CURRENT_USER,
             sub_key=r'Software\Microsoft\Windows\CurrentVersion\Run',
@@ -60,6 +59,7 @@ def check_input(input_text):
     input_salt = f'{input_text}{len(input_text)}'
     sha224 = hashlib.sha224()
     sha224.update(input_salt.encode())
+    # 123 -> '30b0cd50dfa27e59c0abd89d7314155b16e9ab667863916352a392a0'
     return sha224.hexdigest() == '9f17cd624f25b28374a58a6c107d3d0df4299ddccfe390eeba373d12'
 
 
@@ -110,8 +110,8 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                # pass
-                end = True
+                pass
+                # end = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
